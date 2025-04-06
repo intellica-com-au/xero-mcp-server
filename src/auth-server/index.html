@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Xero MCP Server</title>
+  </head>
+  <body>
+    <h1>Xero MCP Server</h1>
+    <p>Server is running...</p>
+  </body>
+  <script>
+    const xmlHttp = new XMLHttpRequest();
+    const searchParams = new URLSearchParams(window.location.search);
+
+    const code = searchParams.get("code");
+
+    xmlHttp.open("post", "http://127.0.0.1:3000/store-token", true);
+    xmlHttp.setRequestHeader("Content-Type", "application/json");
+    xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xmlHttp.send(JSON.stringify({ code: code }));
+  </script>
+</html>
