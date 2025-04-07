@@ -1,21 +1,30 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Xero MCP Server</title>
+    <title>Xero MCP Server Login Completed</title>
+    <link
+      rel="icon"
+      href="https://edge.xero.com/images/1.0.0/logo/xero-logo-64.png"
+      type="image/png"
+    />
+    <style>
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
   </head>
   <body>
-    <h1>Xero MCP Server</h1>
-    <p>Server is running...</p>
+    <div class="container">
+      <a tabindex="-1" class="xl-logo--link" href="https://xero.com/"
+        ><img
+          class="xl-logo--svg"
+          src="https://edge.xero.com/images/1.0.0/logo/xero-logo.svg"
+          alt=""
+          title="Go to xero.com"
+      /></a>
+      <h1>MCP Server is Authenticated, you may close this tab</h1>
+    </div>
   </body>
-  <script>
-    const xmlHttp = new XMLHttpRequest();
-    const searchParams = new URLSearchParams(window.location.search);
-
-    const code = searchParams.get("code");
-
-    xmlHttp.open("post", "http://localhost:3000/store-token", true);
-    xmlHttp.setRequestHeader("Content-Type", "application/json");
-    xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    xmlHttp.send(JSON.stringify({ code: code }));
-  </script>
 </html>

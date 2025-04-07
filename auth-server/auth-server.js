@@ -18,25 +18,25 @@ var accessToken = "";
 app.get("/callback", async (req, res) => {
   const { code } = req.query;
 
-  const response = await axios.post(
-    "https://identity.xero.com/connect/token",
-    {
-      grant_type: "authorization_code",
-      client_id: clientId,
-      code: code,
-      redirect_uri,
-      code_verifier: codeVerifier,
-    },
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "application/json",
-      },
-    },
-  );
+  // const response = await axios.post(
+  //   "https://identity.xero.com/connect/token",
+  //   {
+  //     grant_type: "authorization_code",
+  //     client_id: clientId,
+  //     code: code,
+  //     redirect_uri,
+  //     code_verifier: codeVerifier,
+  //   },
+  //   {
+  //     headers: {
+  //       "Content-Type": "application/x-www-form-urlencoded",
+  //       Accept: "application/json",
+  //     },
+  //   },
+  // );
 
-  accessToken = response.data.access_token;
-  console.log("accessToken", accessToken);
+  // accessToken = response.data.access_token;
+  // console.log("accessToken", accessToken);
 
   res.sendFile(path.join(path.resolve(), "/auth-server/"));
 });
