@@ -1,5 +1,5 @@
 import { xeroClient } from "../clients/xero-client.js";
-import { ToolResponse } from "../types/tool-response.js";
+import { XeroClientResponse } from "../types/tool-response.js";
 import { formatError } from "../helpers/format-error.js";
 import { Invoice } from "xero-node";
 import { getClientHeaders } from "../helpers/get-client-headers.js";
@@ -31,11 +31,15 @@ async function updateInvoice(
   lineItems?: InvoiceLineItem[],
   reference?: string,
   dueDate?: string,
+  date?: string,
+  contactId?: string,
 ): Promise<Invoice | undefined> {
   const invoice: Invoice = {
     lineItems: lineItems,
     reference: reference,
     dueDate: dueDate,
+    date: date,
+    contact: contactId ? { contactID: contactId } : undefined,
   };
 
   const response = await xeroClient.accountingApi.updateInvoice(
@@ -60,7 +64,9 @@ export async function updateXeroInvoice(
   lineItems?: InvoiceLineItem[],
   reference?: string,
   dueDate?: string,
-): Promise<ToolResponse<Invoice>> {
+  date?: string,
+  contactId?: string,
+): Promise<XeroClientResponse<Invoice>> {
   try {
     const existingInvoice = await getInvoice(invoiceId);
 
@@ -80,6 +86,8 @@ export async function updateXeroInvoice(
       lineItems,
       reference,
       dueDate,
+      date,
+      contactId,
     );
 
     if (!updatedInvoice) {

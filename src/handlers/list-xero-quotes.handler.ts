@@ -1,5 +1,5 @@
 import { xeroClient } from "../clients/xero-client.js";
-import { ToolResponse } from "../types/tool-response.js";
+import { XeroClientResponse } from "../types/tool-response.js";
 import { formatError } from "../helpers/format-error.js";
 import { Quote } from "xero-node";
 import { getClientHeaders } from "../helpers/get-client-headers.js";
@@ -7,6 +7,7 @@ import { getClientHeaders } from "../helpers/get-client-headers.js";
 async function getQuotes(
   contactId: string | undefined,
   page: number,
+  quoteNumber: string | undefined,
 ): Promise<Quote[]> {
   await xeroClient.authenticate();
 
@@ -21,7 +22,7 @@ async function getQuotes(
     undefined, // status
     page,
     undefined, // order
-    undefined, // quoteNumber
+    quoteNumber, // quoteNumber
     getClientHeaders(),
   );
   return quotes.body.quotes ?? [];
@@ -33,9 +34,10 @@ async function getQuotes(
 export async function listXeroQuotes(
   page: number = 1,
   contactId?: string,
-): Promise<ToolResponse<Quote[]>> {
+  quoteNumber?: string,
+): Promise<XeroClientResponse<Quote[]>> {
   try {
-    const quotes = await getQuotes(contactId, page);
+    const quotes = await getQuotes(contactId, page, quoteNumber);
 
     return {
       result: quotes,

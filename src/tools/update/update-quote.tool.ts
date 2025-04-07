@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createXeroQuote } from "../../handlers/create-xero-quote.handler.js";
+import { updateXeroQuote } from "../../handlers/update-xero-quote.handler.js";
 import { DeepLinkType, getDeepLink } from "../../helpers/get-deeplink.js";
 import { CreateXeroTool } from "../../helpers/create-xero-tool.js";
 
@@ -11,45 +11,61 @@ const lineItemSchema = z.object({
   taxType: z.string(),
 });
 
-const CreateQuoteTool = CreateXeroTool(
-  "create-quote",
-  "Create a quote in Xero.\
- When a quote is created, a deep link to the quote in Xero is returned. \
+const UpdateQuoteTool = CreateXeroTool(
+  "update-quote",
+  "Update a quote in Xero. Only works on draft quotes.\
+  All line items must be provided. Any line items not provided will be removed. Including existing line items.\
+  Do not modify line items that have not been specified by the user. \
+ When a quote is updated, a deep link to the quote in Xero is returned. \
  This deep link can be used to view the quote in Xero directly. \
  This link should be displayed to the user.",
   {
-    contactId: z.string(),
-    lineItems: z.array(lineItemSchema),
+    quoteId: z.string(),
+    lineItems: z.array(lineItemSchema).optional().describe(
+      "All line items must be provided. Any line items not provided will be removed. Including existing line items. \
+      Do not modify line items that have not been specified by the user",
+    ),
     reference: z.string().optional(),
-    quoteNumber: z.string().optional(),
     terms: z.string().optional(),
     title: z.string().optional(),
     summary: z.string().optional(),
+    quoteNumber: z.string().optional(),
+    contactId: z.string().optional(),
+    date: z.string().optional(),
+    expiryDate: z.string().optional(),
   },
-  async ({
-    contactId,
-    lineItems,
-    reference,
-    quoteNumber,
-    terms,
-    title,
-    summary,
-  }) => {
-    const result = await createXeroQuote(
-      contactId,
+  async (
+    {
+      quoteId,
       lineItems,
       reference,
-      quoteNumber,
       terms,
       title,
       summary,
+      quoteNumber,
+      contactId,
+      date,
+      expiryDate,
+    }
+  ) => {
+    const result = await updateXeroQuote(
+      quoteId,
+      lineItems,
+      reference,
+      terms,
+      title,
+      summary,
+      quoteNumber,
+      contactId,
+      date,
+      expiryDate,
     );
     if (result.isError) {
       return {
         content: [
           {
             type: "text" as const,
-            text: `Error creating quote: ${result.error}`,
+            text: `Error updating quote: ${result.error}`,
           },
         ],
       };
@@ -66,19 +82,17 @@ const CreateQuoteTool = CreateXeroTool(
         {
           type: "text" as const,
           text: [
-            "Quote created successfully:",
+            "Quote updated successfully:",
             `ID: ${quote?.quoteID}`,
             `Contact: ${quote?.contact?.name}`,
             `Total: ${quote?.total}`,
             `Status: ${quote?.status}`,
             deepLink ? `Link to view: ${deepLink}` : null,
-          ]
-            .filter(Boolean)
-            .join("\n"),
+          ].join("\n"),
         },
       ],
     };
   },
 );
 
-export default CreateQuoteTool;
+export default UpdateQuoteTool; 
