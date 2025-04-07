@@ -6,34 +6,17 @@ import path from "path";
 const app = express();
 app.use(express.json());
 const port = 3000;
-const clientId = "";
-const redirect_uri = `http://127.0.0.1:${port}/callback`;
+const clientId = process.env.XERO_APP_CLIENT_ID;
+const redirect_uri = `http://localhost:${port}/callback`;
 const scopes =
   "openid profile email accounting.transactions accounting.contacts accounting.settings.read";
 
 var codeVerifier = "";
+var accessToken = "";
 
 // TODO change this
-app.get("/callback", (req, res) => {
-  res.sendFile(path.join(path.resolve(), "src/auth-server/"));
-});
-
-app.get("/login-url", (req, res) => {
-  codeVerifier = crypto.randomUUID();
-  const codeChallenge = createHash("sha256")
-    .update(codeVerifier)
-    .digest("base64url");
-
-  const url = `https://login.xero.com/identity/connect/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirect_uri}&scope=${scopes}&state=123&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-
-  res.send({ url });
-});
-
-app.post("/store-token", async (req, res) => {
-  const { code } = req.body;
-
-  console.log("code", code);
-  console.log("codeVerifier", codeVerifier);
+app.get("/callback", async (req, res) => {
+  const { code } = req.query;
 
   const response = await axios.post(
     "https://identity.xero.com/connect/token",
@@ -52,9 +35,23 @@ app.post("/store-token", async (req, res) => {
     },
   );
 
-  console.log(response);
+  accessToken = response.data.access_token;
+  console.log("accessToken", accessToken);
 
-  res.send({ message: "Token stored successfully" });
+  res.sendFile(path.join(path.resolve(), "/auth-server/"));
+});
+
+app.get("/login-url", (req, res) => {
+  codeVerifier = `${crypto.randomUUID()}-${crypto.randomUUID()}`;
+  const codeChallenge = createHash("sha256")
+    .update(codeVerifier, "ascii")
+    .digest("base64url");
+
+  const url = `https://login.xero.com/identity/connect/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirect_uri}&scope=${scopes}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+
+  console.log("codeVerifier", codeVerifier);
+
+  res.send({ url });
 });
 
 app.listen(port, () => {
