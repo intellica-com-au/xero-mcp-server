@@ -53,6 +53,13 @@ app.get("/login-url", (req, res) => {
   res.send({ url });
 });
 
+app.get("/token", (req, res) => {
+  res.send({
+    accessToken: memoryStore.accessToken,
+    isAuthenticated: !!memoryStore.accessToken,
+  });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

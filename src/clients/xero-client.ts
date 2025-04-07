@@ -13,6 +13,8 @@ dotenv.config();
 const client_id = process.env.XERO_CLIENT_ID;
 const client_secret = process.env.XERO_CLIENT_SECRET;
 const bearer_token = process.env.XERO_CLIENT_BEARER_TOKEN;
+const app_client_id = process.env.XERO_APP_CLIENT_ID;
+
 const grant_type = "client_credentials";
 
 if (!bearer_token && (!client_id || !client_secret)) {
@@ -160,12 +162,43 @@ class BearerTokenXeroClient extends MCPXeroClient {
   }
 }
 
-export const xeroClient = bearer_token
-  ? new BearerTokenXeroClient({
-      bearerToken: bearer_token,
-    })
-  : new CustomConnectionsXeroClient({
-      clientId: client_id!,
-      clientSecret: client_secret!,
-      grantType: grant_type,
+class PKCEAuthXeroClient extends MCPXeroClient {
+  constructor() {
+    super();
+  }
+
+  async authenticate(): Promise<void> {
+    const tokenResponse = await axios.get<{
+      accessToken: string;
+      isAuthenticated: boolean;
+    }>("http://localhost:3000/token");
+
+    if (!tokenResponse.data.isAuthenticated) {
+      const loginUrlResponse = await axios.get<{
+        url: string;
+      }>("http://localhost:3000//login-url");
+
+      throw new Error(
+        `User is not authenticated. Please log in using the following URL: ${loginUrlResponse.data.url}`,
+      );
+    }
+
+    this.setTokenSet({
+      access_token: tokenResponse.data.accessToken,
     });
+
+    await this.updateTenants();
+  }
+}
+
+export const xeroClient: MCPXeroClient = app_client_id
+  ? new PKCEAuthXeroClient()
+  : bearer_token
+    ? new BearerTokenXeroClient({
+        bearerToken: bearer_token,
+      })
+    : new CustomConnectionsXeroClient({
+        clientId: client_id!,
+        clientSecret: client_secret!,
+        grantType: grant_type,
+      });
