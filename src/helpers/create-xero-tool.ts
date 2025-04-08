@@ -1,12 +1,9 @@
 import { ZodRawShape } from "zod";
 import { ToolCallback } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ToolDefinition } from "../types/tool-definition.js";
-// import { xeroClient } from "../clients/xero-client.js";
-// import { formatError } from "./format-error.js";
-// import { auth } from "@modelcontextprotocol/sdk/client/auth.js";
-// import ListInvoicesTool from "../tools/list/list-invoices.tool.js";
+import { xeroClient } from "../clients/xero-client.js";
+import { formatError } from "./format-error.js";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 // const authMiddleware = <Args extends undefined | ZodRawShape = any>(
 //   callback: ToolCallback<Args>,
 // ): (...args) => {
@@ -25,24 +22,27 @@ import { ToolDefinition } from "../types/tool-definition.js";
 //   };
 // };
 
-// const authMiddleware = (handler: ToolCallback<any>): ToolCallback<any> => {
-//   return async (args, args2) => {
-//     try {
-//       await xeroClient.authenticate();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const authMiddleware: any = (handler: any) => {
+  const func = async (...args: any) => {
+    try {
+      await xeroClient.authenticate();
 
-//       return await handler(args, args2);
-//     } catch (error) {
-//       return {
-//         content: [
-//           {
-//             type: "text" as const,
-//             text: `Error: ${formatError(error)}`,
-//           },
-//         ],
-//       };
-//     }
-//   };
-// };
+      return await handler(...args);
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `Error: ${formatError(error)}`,
+          },
+        ],
+      };
+    }
+  };
+
+  return func;
+};
 
 export const CreateXeroTool =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,5 +56,5 @@ export const CreateXeroTool =
       name: name,
       description: description,
       schema: schema,
-      handler: handler,
+      handler: authMiddleware(handler),
     });
