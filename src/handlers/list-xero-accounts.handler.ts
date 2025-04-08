@@ -5,8 +5,6 @@ import { Account } from "xero-node";
 import { getClientHeaders } from "../helpers/get-client-headers.js";
 
 async function listAccounts(): Promise<Account[]> {
-  await xeroClient.authenticate();
-
   const response = await xeroClient.accountingApi.getAccounts(
     xeroClient.tenantId,
     undefined, // ifModifiedSince

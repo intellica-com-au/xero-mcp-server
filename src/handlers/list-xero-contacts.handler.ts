@@ -5,8 +5,6 @@ import { formatError } from "../helpers/format-error.js";
 import { getClientHeaders } from "../helpers/get-client-headers.js";
 
 async function getContacts(): Promise<Contact[]> {
-  await xeroClient.authenticate();
-
   const contacts = await xeroClient.accountingApi.getContacts(
     xeroClient.tenantId,
     undefined, // ifModifiedSince

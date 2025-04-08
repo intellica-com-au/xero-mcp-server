@@ -13,8 +13,6 @@ interface QuoteLineItem {
 }
 
 async function getQuote(quoteId: string): Promise<Quote | undefined> {
-  await xeroClient.authenticate();
-
   // First, get the current quote to check its status
   const response = await xeroClient.accountingApi.getQuote(
     xeroClient.tenantId, // tenantId
@@ -36,7 +34,7 @@ async function updateQuote(
   contactId?: string,
   date?: string,
   expiryDate?: string,
-  existingQuote?: Quote
+  existingQuote?: Quote,
 ): Promise<Quote | undefined> {
   // Create quote object with only the fields that are being updated
   const quote: Quote = {
@@ -48,14 +46,14 @@ async function updateQuote(
     quoteNumber: quoteNumber,
     expiryDate: expiryDate,
   };
-  
+
   // Only add contact if contactId is provided, otherwise use existing
   if (contactId) {
     quote.contact = { contactID: contactId };
   } else if (existingQuote?.contact) {
     quote.contact = existingQuote.contact;
   }
-  
+
   // Only add date if provided, otherwise use existing
   if (date) {
     quote.date = date;
@@ -116,7 +114,7 @@ export async function updateXeroQuote(
       contactId,
       date,
       expiryDate,
-      existingQuote
+      existingQuote,
     );
 
     if (!updatedQuote) {
@@ -135,4 +133,4 @@ export async function updateXeroQuote(
       error: formatError(error),
     };
   }
-} 
+}

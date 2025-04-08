@@ -9,8 +9,6 @@ async function getInvoices(
   contactIds: string[] | undefined,
   page: number,
 ): Promise<Invoice[]> {
-  await xeroClient.authenticate();
-
   const invoices = await xeroClient.accountingApi.getInvoices(
     xeroClient.tenantId,
     undefined, // ifModifiedSince

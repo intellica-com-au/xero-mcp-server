@@ -13,8 +13,6 @@ async function updateContact(
   address: Address | undefined,
   contactId: string,
 ): Promise<Contact | undefined> {
-  await xeroClient.authenticate();
-
   const contact: Contact = {
     name,
     firstName,

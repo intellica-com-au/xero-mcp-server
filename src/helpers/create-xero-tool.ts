@@ -24,6 +24,7 @@ import { formatError } from "./format-error.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const authMiddleware: any = (handler: any) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const func = async (...args: any) => {
     try {
       await xeroClient.authenticate();

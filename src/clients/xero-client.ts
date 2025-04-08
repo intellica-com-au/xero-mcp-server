@@ -176,7 +176,7 @@ class PKCEAuthXeroClient extends MCPXeroClient {
     if (!tokenResponse.data.isAuthenticated) {
       const loginUrlResponse = await axios.get<{
         url: string;
-      }>("http://localhost:3000//login-url");
+      }>("http://localhost:3000/login-url");
 
       throw new Error(
         `User is not authenticated. Please log in using the following URL: ${loginUrlResponse.data.url}`,

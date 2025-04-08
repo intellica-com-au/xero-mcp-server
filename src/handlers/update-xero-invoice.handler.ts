@@ -13,8 +13,6 @@ interface InvoiceLineItem {
 }
 
 async function getInvoice(invoiceId: string): Promise<Invoice | undefined> {
-  await xeroClient.authenticate();
-
   // First, get the current invoice to check its status
   const response = await xeroClient.accountingApi.getInvoice(
     xeroClient.tenantId,
