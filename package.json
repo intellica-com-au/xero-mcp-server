@@ -10,7 +10,10 @@
   },
   "author": "Xero (https://xero.com)",
   "type": "module",
-  "bin": "./dist/index.js",
+  "bin": {
+    "mcp-server": "./dist/index.js",
+    "auth-server": "./auth-server/auth-server.js"
+  },
   "files": [
     "dist"
   ],
@@ -30,6 +33,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@types/express": "^5.0.1",
     "@types/node": "^22.13.10",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",

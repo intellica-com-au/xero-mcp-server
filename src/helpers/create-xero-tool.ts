@@ -5,7 +5,6 @@ import { xeroClient } from "../clients/xero-client.js";
 import { formatError } from "./format-error.js";
 import { RequestHandlerExtra } from "@modelcontextprotocol/sdk/shared/protocol.js";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const authMiddleware = <Args extends undefined | ZodRawShape = undefined>(
   handler: ToolCallback<Args>,
 ): ToolCallback<Args> => {
