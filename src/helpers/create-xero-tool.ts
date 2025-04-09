@@ -3,33 +3,20 @@ import { ToolCallback } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ToolDefinition } from "../types/tool-definition.js";
 import { xeroClient } from "../clients/xero-client.js";
 import { formatError } from "./format-error.js";
-
-// const authMiddleware = <Args extends undefined | ZodRawShape = any>(
-//   callback: ToolCallback<Args>,
-// ): (...args) => {
-//   return async (args) => {
-//     try {
-//       await xeroClient.authenticate();
-
-//       return await callback(args);
-//     } catch (error) {
-//       return {
-//         result: null,
-//         isError: true,
-//         error: formatError(error),
-//       };
-//     }
-//   };
-// };
+import { RequestHandlerExtra } from "@modelcontextprotocol/sdk/shared/protocol.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const authMiddleware: any = (handler: any) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const func = async (...args: any) => {
+const authMiddleware = <Args extends undefined | ZodRawShape = undefined>(
+  handler: ToolCallback<Args>,
+): ToolCallback<Args> => {
+  const func: ToolCallback<Args> = (async (
+    props: { [x: string]: unknown } & RequestHandlerExtra,
+    extra,
+  ) => {
     try {
       await xeroClient.authenticate();
 
-      return await handler(...args);
+      return await handler(props, extra);
     } catch (error) {
       return {
         content: [
@@ -40,7 +27,7 @@ const authMiddleware: any = (handler: any) => {
         ],
       };
     }
-  };
+  }) as ToolCallback<Args>;
 
   return func;
 };
@@ -57,5 +44,5 @@ export const CreateXeroTool =
       name: name,
       description: description,
       schema: schema,
-      handler: authMiddleware(handler),
+      handler: authMiddleware(handler) as ToolCallback<Args>,
     });
