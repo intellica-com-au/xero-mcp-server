@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Xero MCP Server Login Completed</title>
+    <title>Xero | MCP Server Login Completed</title>
     <link
       rel="icon"
       href="https://edge.xero.com/images/1.0.0/logo/xero-logo-64.png"
@@ -10,21 +10,93 @@
     <style>
       .container {
         display: flex;
-        justify-content: center;
-        align-items: center;
+        flex-direction: column;
+        min-height: 100vh;
+        width: 100%;
+        text-align: center;
+        padding-top: 12vh;
+      }
+
+      .body {
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-smoothing: antialiased;
+        font-smoothing: antialiased;
+        box-sizing: border-box;
+        color: #32465a;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 0.8125rem;
+        line-height: 1.5;
+        background: #fff;
+        min-height: 100%;
+        overflow-y: scroll;
+      }
+
+      .content {
+        background-color: #fff;
+        border-radius: 3px;
+        margin: 0 auto;
+        padding: 30px;
+        width: 100%;
+        max-width: 460px;
+      }
+
+      .logo {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        outline: 0;
+        width: 60px;
+        height: 60px;
+      }
+
+      .logo-svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .heading {
+        line-height: 1.3077;
+        font-weight: 700;
+        font-size: 1.0625rem;
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+
+      .text-body {
+        padding: 20px;
+      }
+
+      *,
+      ::after,
+      ::before {
+        box-sizing: inherit;
       }
     </style>
   </head>
-  <body>
+  <body class="body">
     <div class="container">
-      <a tabindex="-1" class="xl-logo--link" href="https://xero.com/"
-        ><img
-          class="xl-logo--svg"
-          src="https://edge.xero.com/images/1.0.0/logo/xero-logo.svg"
-          alt=""
-          title="Go to xero.com"
-      /></a>
-      <h1>MCP Server is Authenticated, you may close this tab</h1>
+      <div class="content">
+        <div class="logo">
+          <a tabindex="-1" class="xl-logo--link" href="https://xero.com/"
+            ><img
+              class="logo-svg"
+              src="https://edge.xero.com/images/1.0.0/logo/xero-logo.svg"
+              alt=""
+              title="Go to xero.com"
+          /></a>
+        </div>
+
+        <div>
+          <h1 class="heading">Xero MCP Server</h1>
+        </div>
+
+        <div class="text-body">
+          <p>
+            The Xero MCP server has completed the login process. You may close
+            this window.
+          </p>
+        </div>
+      </div>
     </div>
   </body>
 </html>
